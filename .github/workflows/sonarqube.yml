@@ -44,7 +44,7 @@ jobs:
       run: |
             # Get the SonarQube analysis ID
             analysis_id=$(curl -s -u ${SONAR_TOKEN}: \
-              "https://https://sonarcloud.io/project/overview?id=bsp1230_python-sonar/api/ce/task?id=$(cat .scannerwork/report-task.txt | grep ceTaskId | cut -d= -f2)" | \
+              "https://sonarcloud.io/project/overview?id=bsp1230_python-sonar/api/ce/task?id=$(cat .scannerwork/report-task.txt | grep ceTaskId | cut -d= -f2)" | \
               jq -r '.task.analysisId')
     
             # Check the Quality Gate status
