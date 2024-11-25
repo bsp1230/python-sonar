@@ -37,3 +37,24 @@ jobs:
           -Dsonar.host.url= https://sonarcloud.io/project/overview?id=bsp1230_python-sonar\
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.python.coverage.reportPaths=coverage.xml
+    - name: Quality Gate Check
+      id: sonar-quality-gate
+      env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+            # Get the SonarQube analysis ID
+            analysis_id=$(curl -s -u ${SONAR_TOKEN}: \
+              "https://https://sonarcloud.io/project/overview?id=bsp1230_python-sonar/api/ce/task?id=$(cat .scannerwork/report-task.txt | grep ceTaskId | cut -d= -f2)" | \
+              jq -r '.task.analysisId')
+    
+            # Check the Quality Gate status
+            quality_gate_status=$(curl -s -u ${SONAR_TOKEN}: \
+              "https://your-sonarqube-url/api/qualitygates/project_status?analysisId=${analysis_id}" | \
+              jq -r '.projectStatus.status')
+    
+            # Fail the build if the Quality Gate fails
+            if [ "$quality_gate_status" != "OK" ]; then
+              echo "Quality Gate failed!"
+              exit 1
+            fi    
+          
