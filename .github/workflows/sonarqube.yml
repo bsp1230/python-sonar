@@ -30,7 +30,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # SonarQube Token (Add to GitHub secrets)
       run: |
-        pip install sonar-scanner
+        pip install pysonar-scanner
         sonar-scanner \
           -Dsonar.projectKey=bsp1230 \
           -Dsonar.sources=. \
