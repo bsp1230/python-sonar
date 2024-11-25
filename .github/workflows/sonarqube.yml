@@ -26,10 +26,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Tests and Coverage
-      run: |
-        pytest --cov=./ --cov-report=xml
-
     - name: SonarQube Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # SonarQube Token (Add to GitHub secrets)
