@@ -42,19 +42,23 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-            # Get the SonarQube analysis ID
-            analysis_id=$(curl -s -u ${SONAR_TOKEN}: \
-              "https://https://sonarcloud.io/project/overview?id=bsp1230_python-sonar/api/ce/task?id=$(cat .scannerwork/report-task.txt | grep ceTaskId | cut -d= -f2)" | \
-              jq -r '.task.analysisId')
-    
-            # Check the Quality Gate status
-            quality_gate_status=$(curl -s -u ${SONAR_TOKEN}: \
-              "https://your-sonarqube-url/api/qualitygates/project_status?analysisId=${analysis_id}" | \
-              jq -r '.projectStatus.status')
-    
-            # Fail the build if the Quality Gate fails
-            if [ "$quality_gate_status" != "OK" ]; then
-              echo "Quality Gate failed!"
-              exit 1
-            fi    
+
+        # Wait a bit for the analysis to complete
+        sleep 30
+
+        # Check the Quality Gate status from SonarCloud
+        quality_gate_status=$(curl -s -u ${SONAR_TOKEN}: \
+          "https://sonarcloud.io/api/qualitygates/project_status?projectKey=bsp1230_python-sonar" | \
+          jq -r '.projectStatus.status')
+
+        # Output the quality gate status
+        echo "Quality Gate Status: $quality_gate_status"
+
+        # Fail the build if the Quality Gate fails
+        if [ "$quality_gate_status" != "OK" ]; then
+          echo "Quality Gate failed!"
+          exit 1
+        else
+          echo "Quality Gate passed!"
+        fi
           
