@@ -36,6 +36,7 @@ jobs:
           -Dsonar.sources=. \
           -Dsonar.host.url= https://sonarcloud.io/project/overview?id=bsp1230_python-sonar\
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          -Dsonar.branch.name=${{ github.ref_name }} \
           -Dsonar.python.coverage.reportPaths=coverage.xml
         echo "View the detailed report at: https://sonarcloud.io/summary/new_code?id=bsp1230_python-sonar"
         
@@ -50,17 +51,17 @@ jobs:
 
         # Check the Quality Gate status from SonarCloud
         quality_gate_status=$(curl -s -u ${SONAR_TOKEN}: \
-          "https://sonarcloud.io/api/qualitygates/project_status?projectKey=bsp1230_python-sonar" | \
+          "https://sonarcloud.io/api/qualitygates/project_status?projectKey=bsp1230_python-sonar&branch=${{ github.ref_name }}" | \
           jq -r '.projectStatus.status')
 
         # Output the quality gate status
-        echo "Quality Gate Status: $quality_gate_status"
+        echo "Quality Gate Status: $quality_gate_status for branch ${{ github.ref_name }}:"
 
         # Fail the build if the Quality Gate fails
         if [ "$quality_gate_status" != "OK" ]; then
-          echo "Quality Gate failed!"
+          echo "Quality Gate failed! for branch ${{ github.ref_name }}!" 
           exit 1
         else
-          echo "Quality Gate passed!"
+          echo "Quality Gate passed! for branch ${{ github.ref_name }}!"
         fi
           
