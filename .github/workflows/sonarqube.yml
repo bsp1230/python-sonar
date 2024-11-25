@@ -37,6 +37,8 @@ jobs:
           -Dsonar.host.url= https://sonarcloud.io/project/overview?id=bsp1230_python-sonar\
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.python.coverage.reportPaths=coverage.xml
+        echo "View the detailed report at: https://sonarcloud.io/summary/new_code?id=bsp1230_python-sonar"
+        
     - name: Quality Gate Check
       id: sonar-quality-gate
       env:
