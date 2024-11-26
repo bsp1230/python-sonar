@@ -8,4 +8,5 @@ def read_root():
 
 @app.get("/items/{item_id}")
 def readItem(item_id: int, q: str):
+    print('hai')
     return {"item_id": item_id, "q": q}
